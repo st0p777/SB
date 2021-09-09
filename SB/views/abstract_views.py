@@ -1,7 +1,12 @@
+from django.template.context_processors import request
 from ..models import CustomField, KBItem, Queue
 
 
-class AbstractCreateTicketMixin():
+class AbstractCreateTicketMixin:
+
+    def __init__(self):
+        self.request = request
+
     def get_initial(self):
         initial_data = {}
         request = self.request
@@ -17,7 +22,7 @@ class AbstractCreateTicketMixin():
         custom_fields = ["custom_%s" % f.name for f in CustomField.objects.filter(staff_only=False)]
         query_param_fields += custom_fields
         for qpf in query_param_fields:
-            initial_data[qpf] = request.GET.get(qpf, initial_data.get(qpf, ""))
+            initial_data[qpf] = self.request.GET.get(qpf, initial_data.get(qpf, ""))
 
         return initial_data
 

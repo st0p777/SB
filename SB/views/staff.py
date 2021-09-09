@@ -1431,8 +1431,8 @@ def run_report(request, report):
     metric3 = False
     for ticket in report_queryset:
         if report == 'userpriority':
-            metric1 = u'%s' % ticket.get_assigned_to
-            metric2 = u'%s' % ticket.get_priority_display()
+            metric1 = u'{}'.format(ticket.get_assigned_to)
+            metric2 = u'{}'.format(ticket.get_priority_display())
 
         elif report == 'userqueue':
             metric1 = u'%s' % ticket.get_assigned_to
