@@ -19,18 +19,19 @@
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/../Django" />
     <property name="restartRequiresConfirmation" value="false" />
-    <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
+    <property name="settings.editor.selected.configurable" value="preferences.sourceCode" />
   </component>
   <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\Users\st0p7\PycharmProjects\SB\SB\templates" />
+      <recent name="C:\Users\st0p7\PycharmProjects\SB\venv\Lib\site-packages\django\templatetags" />
+    </key>
     <key name="MoveFile.RECENT_KEYS">
       <recent name="C:\Users\st0p7\PycharmProjects\SB\SB\templates\helpdesk" />
       <recent name="C:\Users\st0p7\PycharmProjects\SB\SB" />
       <recent name="C:\Users\st0p7\PycharmProjects\SB" />
-    </key>
-    <key name="CopyFile.RECENT_KEYS">
-      <recent name="C:\Users\st0p7\PycharmProjects\SB\venv\Lib\site-packages\django\templatetags" />
     </key>
   </component>
   <component name="RunManager">
@@ -79,7 +80,12 @@
       <workItem from="1631047167751" duration="18000" />
       <workItem from="1631049598146" duration="134000" />
       <workItem from="1631087148792" duration="1190000" />
-      <workItem from="1631088521349" duration="4778000" />
+      <workItem from="1631088521349" duration="6507000" />
+      <workItem from="1631110776126" duration="573000" />
+      <workItem from="1631111406441" duration="4304000" />
+      <workItem from="1631124819589" duration="9081000" />
+      <workItem from="1631169177378" duration="2532000" />
+      <workItem from="1631184555804" duration="2622000" />
     </task>
     <servers />
   </component>
@@ -87,26 +93,30 @@
     <option name="version" value="2" />
   </component>
   <component name="WindowStateProjectService">
-    <state x="740" y="275" key="FileChooserDialogImpl" timestamp="1631039788907">
+    <state x="586" y="198" key="#Inspections" timestamp="1631113153357">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state x="740" y="275" key="FileChooserDialogImpl/0.0.1920.1040@0.0.1920.1040" timestamp="1631039788907" />
-    <state width="1877" height="348" key="GridCell.Tab.0.bottom" timestamp="1631095740229">
+    <state x="586" y="198" key="#Inspections/0.0.1920.1040@0.0.1920.1040" timestamp="1631113153357" />
+    <state x="740" y="275" key="FileChooserDialogImpl" timestamp="1631185919965">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1877" height="348" key="GridCell.Tab.0.bottom/0.0.1920.1040@0.0.1920.1040" timestamp="1631095740229" />
-    <state width="1877" height="348" key="GridCell.Tab.0.center" timestamp="1631095740228">
+    <state x="740" y="275" key="FileChooserDialogImpl/0.0.1920.1040@0.0.1920.1040" timestamp="1631185919965" />
+    <state width="1877" height="81" key="GridCell.Tab.0.bottom" timestamp="1631171726844">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1877" height="348" key="GridCell.Tab.0.center/0.0.1920.1040@0.0.1920.1040" timestamp="1631095740228" />
-    <state width="1877" height="348" key="GridCell.Tab.0.left" timestamp="1631095740227">
+    <state width="1877" height="81" key="GridCell.Tab.0.bottom/0.0.1920.1040@0.0.1920.1040" timestamp="1631171726844" />
+    <state width="1877" height="81" key="GridCell.Tab.0.center" timestamp="1631171726844">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1877" height="348" key="GridCell.Tab.0.left/0.0.1920.1040@0.0.1920.1040" timestamp="1631095740227" />
-    <state width="1877" height="348" key="GridCell.Tab.0.right" timestamp="1631095740228">
+    <state width="1877" height="81" key="GridCell.Tab.0.center/0.0.1920.1040@0.0.1920.1040" timestamp="1631171726844" />
+    <state width="1877" height="81" key="GridCell.Tab.0.left" timestamp="1631171726844">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1877" height="348" key="GridCell.Tab.0.right/0.0.1920.1040@0.0.1920.1040" timestamp="1631095740228" />
+    <state width="1877" height="81" key="GridCell.Tab.0.left/0.0.1920.1040@0.0.1920.1040" timestamp="1631171726844" />
+    <state width="1877" height="81" key="GridCell.Tab.0.right" timestamp="1631171726844">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state width="1877" height="81" key="GridCell.Tab.0.right/0.0.1920.1040@0.0.1920.1040" timestamp="1631171726844" />
     <state width="1877" height="48" key="GridCell.Tab.1.bottom" timestamp="1631028590103">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
@@ -123,17 +133,21 @@
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state width="1877" height="48" key="GridCell.Tab.1.right/0.0.1920.1040@0.0.1920.1040" timestamp="1631028590102" />
-    <state x="476" y="166" key="SettingsEditor" timestamp="1630959289678">
+    <state x="476" y="166" key="SettingsEditor" timestamp="1631113274883">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state x="476" y="166" key="SettingsEditor/0.0.1920.1040@0.0.1920.1040" timestamp="1630959289678" />
+    <state x="476" y="166" key="SettingsEditor/0.0.1920.1040@0.0.1920.1040" timestamp="1631113274883" />
     <state width="968" height="528" key="XDebugger.FullValuePopup" timestamp="1631016497233">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state width="968" height="528" key="XDebugger.FullValuePopup/0.0.1920.1040@0.0.1920.1040" timestamp="1631016497233" />
-    <state x="754" y="40" width="1111" height="897" key="find.popup" timestamp="1631094984098">
+    <state x="479" y="34" width="1140" height="897" key="find.popup" timestamp="1631186653128">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state x="754" y="40" width="1111" height="897" key="find.popup/0.0.1920.1040@0.0.1920.1040" timestamp="1631094984098" />
+    <state x="479" y="34" width="1140" height="897" key="find.popup/0.0.1920.1040@0.0.1920.1040" timestamp="1631186653128" />
+    <state x="623" y="225" width="672" height="678" key="search.everywhere.popup" timestamp="1631124864005">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="623" y="225" width="672" height="678" key="search.everywhere.popup/0.0.1920.1040@0.0.1920.1040" timestamp="1631124864005" />
   </component>
 </project>
