@@ -1,4 +1,4 @@
-{% load i18n tz%}
+{% load i18n static%}
 {% load saved_queries %}
 {% load load_helpdesk_settings %}
 {% load static %}
@@ -6,11 +6,10 @@
 <html lang="en">
 
 <head>
-
+    <link rel="icon" href="{% static 'helpdesk/favicon.ico'%}" type="image/x-icon">
     {% include 'helpdesk/base-head.html' %}
     {% block helpdesk_head %}{% endblock %}
     {% include 'helpdesk/base_js.html' %}
-
 </head>
 
 <body id="bg-dark">

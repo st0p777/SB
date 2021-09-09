@@ -1,4 +1,4 @@
-{% extends "helpdesk/base.html" %}{% load i18n %}
+{% extends "helpdesk/base.html" %}{% load i18n bootstrap4form%}
 
 {% block helpdesk_title %}{% trans "Change User Settings" %}{% endblock %}
 
@@ -19,7 +19,7 @@
 {% block form_content %}
 <form role="form" method='post' action='./'>
     {% csrf_token %}
-    {{ form }}
+    {{ form|bootstrap4form }}
     <div class="form-group">
       <input type="submit" value="Submit"/>
     </div>

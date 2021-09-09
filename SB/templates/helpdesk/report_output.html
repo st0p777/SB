@@ -80,13 +80,13 @@
 {% block helpdesk_js %}
 
     <!-- Flot Charts JavaScript -->
-    <script src="/static/helpdesk/vendor/flot/excanvas.min.js"></script>
-    <script src="/static/helpdesk/vendor/flot/jquery.flot.js"></script>
-    <script src="/static/helpdesk/vendor/flot/jquery.flot.categories.js"></script>
-    <script src="/static/helpdesk/vendor/flot/jquery.flot.pie.js"></script>
-    <script src="/static/helpdesk/vendor/flot/jquery.flot.resize.js"></script>
-    <script src="/static/helpdesk/vendor/flot/jquery.flot.time.js"></script>
-    <script src="/static/helpdesk/vendor/flot-tooltip/jquery.flot.tooltip.min.js"></script>
+    <script src="{% static '/helpdesk/vendor/flot/excanvas.min.js'%}"></script>
+    <script src="{% static '/helpdesk/vendor/flot/jquery.flot.js'%}"></script>
+    <script src="{% static '/helpdesk/vendor/flot/jquery.flot.categories.js'%}"></script>
+    <script src="{% static '/helpdesk/vendor/flot/jquery.flot.pie.js'%}"></script>
+    <script src="{% static '/helpdesk/vendor/flot/jquery.flot.resize.js'%}"></script>
+    <script src="{% static '/helpdesk/vendor/flot/jquery.flot.time.js'%}"></script>
+    <script src="{% static '/helpdesk/vendor/flot-tooltip/jquery.flot.tooltip.min.js'%}"></script>
 
     <!-- Morris Charts JavaScript -->
     {% if helpdesk_settings.HELPDESK_USE_CDN %}

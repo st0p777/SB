@@ -1,4 +1,4 @@
-{% extends "helpdesk/public_base.html" %}{% load i18n %}
+{% extends "helpdesk/public_base.html" %}{% load i18n humanize%}
 {% load static %}
 {% block helpdesk_title %}{% trans "View a Ticket" %}{% endblock %}
 
@@ -12,13 +12,13 @@
 <tbody>
 <tr>
     <th>{% trans "Submitted On" %}</th>
-    <td>{{ ticket.created|date:"DATETIME_FORMAT" }} ({{ ticket.created }})</td>
+    <td>{{ ticket.created|date:"DATETIME_FORMAT" }} ({{ ticket.created|naturaltime }})</td>
 </tr>
 
 {% if ticket.due_date %}
     <tr>
         <th>{% trans "Due On" %}</th>
-        <td>{{ ticket.due_date|date:"DATETIME_FORMAT" }} ({{ ticket.due_date }})</td>
+        <td>{{ ticket.due_date|date:"DATETIME_FORMAT" }} ({{ ticket.due_date|naturaltime }})</td>
     </tr>
 {% endif %}
 

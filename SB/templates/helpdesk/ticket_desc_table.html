@@ -1,4 +1,4 @@
-{% load i18n ticket_to_link %}
+{% load i18n ticket_to_link humanize%}
 {% load static %}
 {% load helpdesk_util %}
 
@@ -15,7 +15,7 @@
                             <span class='ticket_toolbar float-right'>
                         <a href="{% url 'edit' ticket.id %}" class="ticket-edit"><button class="btn btn-warning btn-sm"><i class="fas fa-pencil-alt"></i> {% trans "Edit" %}</button></a>
                     | <a href="{% url 'delete' ticket.id %}" class="ticket-delete"><button class="btn btn-danger btn-sm"><i class="fas fa-trash-alt"></i> {% trans "Delete" %}</button></a>
-                    {% if ticket.on_hold %} | <a href="{% url 'unhold' ticket.id %}" class="ticket-hold"><button class="btn btn-warning btn-sm"><i class="fas fa-play"></i> {% trans "Unhold" %}</button></a>{% else %} | <a href="{% url 'helpdesk:hold' ticket.id %}" class="ticket-hold"><button class="btn btn-warning btn-sm"><i class="fas fa-pause"></i> {% trans "Hold" %}</button></a>{% endif %}
+                    {% if ticket.on_hold %} | <a href="{% url 'unhold' ticket.id %}" class="ticket-hold"><button class="btn btn-warning btn-sm"><i class="fas fa-play"></i> {% trans "Unhold" %}</button></a>{% else %} | <a href="{% url 'hold' ticket.id %}" class="ticket-hold"><button class="btn btn-warning btn-sm"><i class="fas fa-pause"></i> {% trans "Hold" %}</button></a>{% endif %}
                     </span></th></tr>
                 </thead>
                 <tbody>
@@ -31,10 +31,10 @@
                     </tr>{% endfor %}
                     <tr>
                         <th class="table-active">{% trans "Due Date" %}</th>
-                        <td>{{ ticket.due_date|date:"DATETIME_FORMAT" }} {% if ticket.due_date %}({{ ticket.due_date }}){% endif %}
+                        <td>{{ ticket.due_date|date:"DATETIME_FORMAT" }} {% if ticket.due_date %}({{ ticket.due_date|naturaltime }}){% endif %}
                         </td>
                         <th class="table-active">{% trans "Submitted On" %}</th>
-                        <td>{{ ticket.created|date:"DATETIME_FORMAT" }} ({{ ticket.created }})</td>
+                        <td>{{ ticket.created|date:"DATETIME_FORMAT" }} ({{ ticket.created|naturaltime }})</td>
                     </tr>
                     <tr>
                         <th class="table-active">{% trans "Assigned To" %}</th>
@@ -65,7 +65,7 @@
                             <a data-toggle='tooltip' href='{% url 'ticket_dependency_add' ticket.id %}' title="{% trans "Click on 'Add Dependency', if you want to make this ticket dependent on another ticket. A ticket may not be closed until all tickets it depends on are closed." %}"><button type="button" class="btn btn-primary btn-sm float-right"><i class="fas fa-link"></i></button></a>
                             {% for dep in ticket.ticketdependency.all %}
                             {% if forloop.first %}<p>{% trans "This ticket cannot be resolved until the following ticket(s) are resolved" %}</p><ul>{% endif %}
-                                <li><a href='{{ dep.depends_on.get_absolute_url }}'>{{ dep.depends_on.ticket }} {{ dep.depends_on.title }}</a> ({{ dep.depends_on.get_status_display }}) <a href='{% url 'helpdesk:ticket_dependency_del' ticket.id dep.id %}'><button type="button" class="btn btn-warning btn-sm"><i class="fas fa-trash"></i></button></a></li>
+                                <li><a href='{{ dep.depends_on.get_absolute_url }}'>{{ dep.depends_on.ticket }} {{ dep.depends_on.title }}</a> ({{ dep.depends_on.get_status_display }}) <a href='{% url 'ticket_dependency_del' ticket.id dep.id %}'><button type="button" class="btn btn-warning btn-sm"><i class="fas fa-trash"></i></button></a></li>
                                 {% if forloop.last %}</ul>{% endif %}
                             {% empty %}
                             {% trans "This ticket has no dependencies." %}

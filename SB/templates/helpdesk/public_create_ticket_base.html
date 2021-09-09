@@ -1,4 +1,4 @@
-{% load i18n %}
+{% load i18n bootstrap4form%}
 {% load load_helpdesk_settings %}
 
     {% if helpdesk_settings.HELPDESK_SUBMIT_A_TICKET_PUBLIC %}
@@ -12,7 +12,7 @@
         {% endif %}
         <form role="form" method='post' enctype='multipart/form-data'>
             {% csrf_token %}
-            {{ form}}
+            {{ form|bootstrap4form}}
             <button type="submit" class="btn btn-primary btn-lg btn-block">
                 {% trans "Submit Ticket" %} <i class="fa fa-paper-plane"></i>
             </button>

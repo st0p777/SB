@@ -1,7 +1,8 @@
-{% load i18n %}
+{% load i18n static%}
 {% load saved_queries %}
 <!DOCTYPE html>
 <head>
+    <link rel="icon" href="{% static 'helpdesk/favicon.ico'%}" type="image/x-icon">
     {% include 'helpdesk/base-head.html' %}
     {% block helpdesk_head %}{% endblock %}
 </head>
