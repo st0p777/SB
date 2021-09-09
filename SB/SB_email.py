@@ -1,10 +1,3 @@
-"""
-Django Helpdesk - A Django powered ticket tracker for small enterprise.
-
-(c) Copyright 2008 Jutda. Copyright 2018 Timothy Hobbs. All Rights Reserved.
-See LICENSE for details.
-"""
-# import base64
 import email
 import imaplib
 import logging
@@ -19,7 +12,6 @@ from datetime import timedelta
 from email.utils import getaddresses
 from os.path import isfile, join
 from time import ctime
-
 from bs4 import BeautifulSoup
 from django.conf import settings as django_settings
 from django.contrib.auth import get_user_model
@@ -29,15 +21,12 @@ from django.db.models import Q
 from django.utils import encoding, timezone
 from django.utils.translation import ugettext as _
 from email_reply_parser import EmailReplyParser
-
 from .settings import settings
 from .lib import safe_template_context, process_attachments
 from .models import Queue, Ticket, TicketCC, FollowUp, IgnoreEmail
 
 
-# import User model, which may be a custom model
 User = get_user_model()
-
 
 STRIPPED_SUBJECT_STRINGS = [
     "Re: ",
@@ -87,7 +76,6 @@ def process_email(quiet=False):
                 q.email_box_last_check = timezone.now()
                 q.save()
         finally:
-            # we must close the file handler correctly if it's created
             try:
                 if log_file_handler:
                     log_file_handler.close()
@@ -143,30 +131,14 @@ def pop3_sync(q, logger, server):
 
 def imap_sync(q, logger, server):
     try:
-        try:
-            server.starttls()
-        except Exception:
-            logger.warning("IMAP4 StartTLS unsupported or failed. Connection will be unencrypted.")
-        server.login(q.email_box_user or
-                     settings.QUEUE_EMAIL_BOX_USER,
-                     q.email_box_pass or
-                     settings.QUEUE_EMAIL_BOX_PASSWORD)
-        server.select(q.email_box_imap_folder)
-    except imaplib.IMAP4.abort:
-        logger.error(
-            "IMAP login failed. Check that the server is accessible and that "
-            "the username and password are correct."
-        )
-        server.logout()
-        sys.exit()
-    except ssl.SSLError:
-        logger.error(
-            "IMAP login failed due to SSL error. This is often due to a timeout. "
-            "Please check your connection and try again."
-        )
-        server.logout()
-        sys.exit()
-
+        server.starttls()
+    except Exception:
+        logger.warning("IMAP4 StartTLS unsupported or failed. Connection will be unencrypted.")
+    server.login(q.email_box_user or
+                 settings.QUEUE_EMAIL_BOX_USER,
+                 q.email_box_pass or
+                 settings.QUEUE_EMAIL_BOX_PASSWORD)
+    server.select(q.email_box_imap_folder)
     try:
         status, data = server.search(None, 'NOT', 'DELETED')
         if data:
@@ -179,7 +151,7 @@ def imap_sync(q, logger, server):
                 try:
                     ticket = object_from_message(message=full_message, queue=q, logger=logger)
                 except TypeError:
-                    ticket = None  # hotfix. Need to work out WHY.
+                    ticket = None
                 if ticket:
                     server.store(num, '+FLAGS', '\\Deleted')
                     logger.info("Successfully processed message %s, deleted from IMAP server" % num)

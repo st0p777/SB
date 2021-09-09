@@ -11,11 +11,6 @@ class HelpdeskUser:
         self.user = user
 
     def get_queues(self):
-        """Return the list of Queues the user can access.
-
-        :param user: The User (the class should have the has_perm method)
-        :return: A Python list of Queues
-        """
         user = self.user
         all_queues = Queue.objects.all()
         public_ids = [q.pk for q in
@@ -52,12 +47,6 @@ class HelpdeskUser:
             or helpdesk_settings.HELPDESK_ALLOW_NON_STAFF_TICKET_UPDATE
 
     def can_access_queue(self, queue):
-        """Check if a certain user can access a certain queue.
-
-        :param user: The User (the class should have the has_perm method)
-        :param queue: The django-helpdesk Queue instance
-        :return: True if the user has permission (either by default or explicitly), false otherwise
-        """
         if self.has_full_access():
             return True
         else:
@@ -68,8 +57,6 @@ class HelpdeskUser:
             )
 
     def can_access_ticket(self, ticket):
-        """Check to see if the user has permission to access
-            a ticket. If not then deny access."""
         user = self.user
         if self.can_access_queue(ticket.queue):
             return True

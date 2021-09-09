@@ -1,15 +1,7 @@
 from rest_framework import serializers
-
 from .models import Ticket
 from .lib import format_time_spent
-
 from django.contrib.humanize.templatetags import humanize
-
-"""
-A serializer for the Ticket model, returns data in the format as required by
-datatables for ticket_list.html. Called from staff.datatables_ticket_list.
-
-"""
 
 
 class DatatablesTicketSerializer(serializers.ModelSerializer):

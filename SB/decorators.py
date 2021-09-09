@@ -1,21 +1,12 @@
 from functools import wraps
-
 from django.core.exceptions import PermissionDenied
 from django.http import Http404
 from django.shortcuts import redirect
-
 from django.contrib.auth.decorators import user_passes_test
-
-
 from .settings import settings as helpdesk_settings
 
 
 def check_staff_status(check_staff=False):
-    """
-    Somewhat ridiculous currying to check user permissions without using lambdas.
-    The function most only take one User parameter at the end for use with
-    the Django function user_passes_test.
-    """
     def check_superuser_status(check_superuser):
         def check_user_status(u):
             is_ok = u.is_authenticated and u.is_active

@@ -7,6 +7,7 @@ from pathlib import Path
 SECRET_KEY = 'django-insecure-9uy*!q%#0-2*y_tt=(xrd3-n4k$63np(0^wflnnv(xq(0j7(^)'
 
 INSTALLED_APPS = [
+    'django.contrib.sites',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -14,7 +15,19 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'SB',
-    'humanize'
+    'markdown_deux',
+    'bootstrapform',
+    'bootstrap4form',
+    'pinax.teams',
+    'account',
+    'pinax.invitations',
+    'django.contrib.humanize',
+    'django.contrib.admindocs',
+    'axes',
+    'health_check',
+    'health_check.db',
+    'health_check.cache',
+    'health_check.storage',
 ]
 
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -30,6 +43,7 @@ TEMPLATES = [
                 'django.template.context_processors.debug',
                 'django.template.context_processors.i18n',
                 'django.template.context_processors.media',
+                'django.template.context_processors.request',
                 'django.template.context_processors.static',
                 'django.template.context_processors.tz',
                 'django.template.context_processors.request',
@@ -46,6 +60,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'axes.middleware.AxesMiddleware',
 ]
 
 STATIC_URL = 'SB/static/'
@@ -57,11 +72,11 @@ DEFAULT_USER_SETTINGS = {
     'tickets_per_page': 25,
     'use_email_as_submitter': True,
 }
-
+AUTHENTICATION_BACKENDS = ['axes.backends.AxesBackend', 'django.contrib.auth.backends.ModelBackend']
 
 HAS_TAG_SUPPORT = False
 DEBUG = True
-
+SITE_ID = 1
 ALLOWED_HOSTS = ['*']
 ROOT_URLCONF = 'SB.urls'
 HELPDESK_MODEL = 'SB'
@@ -212,7 +227,7 @@ HELPDESK_ENABLE_PER_QUEUE_STAFF_PERMISSION = getattr(
 
 HELPDESK_USE_HTTPS_IN_EMAIL_LINK = getattr(settings, 'HELPDESK_USE_HTTPS_IN_EMAIL_LINK', False)
 
-HELPDESK_TEAMS_MODEL = getattr(settings, 'HELPDESK_TEAMS_MODEL', 'SB.KBItem')
+HELPDESK_TEAMS_MODEL = getattr(settings, 'HELPDESK_TEAMS_MODEL', 'pinax_teams.Team')
 HELPDESK_TEAMS_MIGRATION_DEPENDENCIES = getattr(settings, 'HELPDESK_TEAMS_MIGRATION_DEPENDENCIES', [('SB', '0027_auto_20200107_1221')])
 HELPDESK_KBITEM_TEAM_GETTER = getattr(settings, 'HELPDESK_KBITEM_TEAM_GETTER', lambda kbitem: kbitem.team)
 

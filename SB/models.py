@@ -1,12 +1,3 @@
-"""
-django-helpdesk - A Django powered ticket tracker for small enterprise.
-
-(c) Copyright 2008 Jutda. All Rights Reserved. See LICENSE for details.
-
-models.py - Model (and hence database) definitions. This is the core of the
-            helpdesk structure.
-"""
-
 from django.contrib.auth.models import Permission
 from django.contrib.auth import get_user_model
 from django.contrib.contenttypes.models import ContentType
@@ -20,16 +11,11 @@ import re
 import os
 import mimetypes
 import datetime
-
 from django.utils.safestring import mark_safe
 from markdown import markdown
 from markdown.extensions import Extension
-
-
 import uuid
-
 from .settings import settings as helpdesk_settings
-
 from .templated_email import send_templated_mail
 
 
@@ -45,7 +31,7 @@ def format_time_spent(time_spent):
 
 
 class EscapeHtml(Extension):
-    def extendMarkdown(self, md, md_globals):
+    def extendMarkdown(self, md):
         del md.preprocessors['html_block']
         del md.inlinePatterns['html']
 
@@ -346,6 +332,7 @@ class Queue(models.Model):
                 return u'NO QUEUE EMAIL ADDRESS DEFINED <%s>' % settings.DEFAULT_FROM_EMAIL
         else:
             return u'%s <%s>' % (self.title, self.email_address)
+
     from_address = property(_from_address)
 
     @property
@@ -562,9 +549,6 @@ class Ticket(models.Model):
 
     @property
     def time_spent(self):
-        """Return back total time spent on the ticket. This is calculated value
-        based on total sum from all FollowUps
-        """
         total = datetime.timedelta(0)
         for val in self.followup_set.all():
             if val.time_spent:
@@ -583,9 +567,6 @@ class Ticket(models.Model):
 
         recipients.add(self.queue.email_address)
 
-        def should_receive(email):
-            return email and email not in recipients
-
         def send(role, recipient):
             if recipient and recipient not in recipients and role in roles:
                 template, context = roles[role]
@@ -603,16 +584,11 @@ class Ticket(models.Model):
         return recipients
 
     def _get_assigned_to(self):
-        """ Custom property to allow us to easily print 'Unassigned' if a
-        ticket has no owner, or the users name if it's assigned. If the user
-        has a full name configured, we use that, otherwise their username. """
         if not self.assigned_to:
             return _('Unassigned')
         else:
-            if self.assigned_to.get_full_name():
-                return self.assigned_to.get_full_name()
-            else:
-                return self.assigned_to.get_username()
+            return self.assigned_to
+
     get_assigned_to = property(_get_assigned_to)
 
     def _get_ticket(self):
@@ -620,11 +596,13 @@ class Ticket(models.Model):
         and queue slug. This is generally used in e-mail subjects. """
 
         return u"[%s]" % self.ticket_for_url
+
     ticket = property(_get_ticket)
 
     def _get_ticket_for_url(self):
         """ A URL-friendly ticket ID, used in links. """
         return u"%s-%s" % (self.queue.slug, self.id)
+
     ticket_for_url = property(_get_ticket_for_url)
 
     def _get_priority_css_class(self):
@@ -639,6 +617,7 @@ class Ticket(models.Model):
             return "success"
         else:
             return ""
+
     get_priority_css_class = property(_get_priority_css_class)
 
     def _get_status(self):
@@ -652,6 +631,7 @@ class Ticket(models.Model):
         if not self.can_be_resolved:
             dep_msg = _(' - Open dependencies')
         return u'%s%s%s' % (self.get_status_display(), held_msg, dep_msg)
+
     get_status = property(_get_status)
 
     def _get_ticket_url(self):
@@ -678,6 +658,7 @@ class Ticket(models.Model):
             self.submitter_email,
             self.secret_key
         )
+
     ticket_url = property(_get_ticket_url)
 
     def _get_staff_url(self):
@@ -702,6 +683,7 @@ class Ticket(models.Model):
             reverse('view',
                     args=[self.id])
         )
+
     staff_url = property(_get_staff_url)
 
     def _can_be_resolved(self):
@@ -713,6 +695,7 @@ class Ticket(models.Model):
         OPEN_STATUSES = (Ticket.OPEN_STATUS, Ticket.REOPENED_STATUS)
         return TicketDependency.objects.filter(ticket=self).filter(
             depends_on__status__in=OPEN_STATUSES).count() == 0
+
     can_be_resolved = property(_can_be_resolved)
 
     def get_submitter_userprofile(self):
@@ -791,8 +774,8 @@ class Ticket(models.Model):
         ticket_emails = [x.display for x in self.ticketcc_set.all()]
         if self.submitter_email:
             ticket_emails.append(self.submitter_email)
-        if self.assigned_to and self.assigned_to.email:
-            ticket_emails.append(self.assigned_to.email)
+        if self.assigned_to and self.submitter_email:
+            ticket_emails.append(self.submitter_email)
 
         # Check that email is not already part of the ticket
         if email not in ticket_emails:
@@ -816,18 +799,6 @@ class FollowUpManager(models.Manager):
 
 
 class FollowUp(models.Model):
-    """
-    A FollowUp is a comment and/or change to a ticket. We keep a simple
-    title, the comment entered by the user, and the new status of a ticket
-    to enable easy flagging of details on the view-ticket page.
-
-    The title is automatically generated at save-time, based on what action
-    the user took.
-
-    Tickets that aren't public are never shown to or e-mailed to the submitter,
-    although all staff can see them.
-    """
-
     ticket = models.ForeignKey(
         Ticket,
         on_delete=models.CASCADE,
@@ -1041,7 +1012,6 @@ class Attachment(models.Model):
 
 
 class FollowUpAttachment(Attachment):
-
     followup = models.ForeignKey(
         FollowUp,
         on_delete=models.CASCADE,
@@ -1063,7 +1033,6 @@ class FollowUpAttachment(Attachment):
 
 
 class KBIAttachment(Attachment):
-
     kbitem = models.ForeignKey(
         "KBItem",
         on_delete=models.CASCADE,
@@ -1094,6 +1063,7 @@ class PreSetReply(models.Model):
     When replying to a ticket, the user can select any reply set for the current
     queue, and the body text is fetched via AJAX.
     """
+
     class Meta:
         ordering = ('name',)
         verbose_name = _('Pre-set reply')
@@ -1322,7 +1292,7 @@ class KBItem(models.Model):
     team = models.ForeignKey(
         helpdesk_settings.HELPDESK_TEAMS_MODEL,
         on_delete=models.CASCADE,
-        verbose_name=_('SB.KBItem'),
+        verbose_name=_('Team'),
         blank=True,
         null=True,
     )
@@ -1352,6 +1322,7 @@ class KBItem(models.Model):
             return (self.recommendations / self.votes) * 10
         else:
             return _('Unrated')
+
     score = property(_score)
 
     def __str__(self):
@@ -1539,6 +1510,7 @@ class IgnoreEmail(models.Model):
     processing IMAP and POP3 mailboxes, eg mails from postmaster or from
     known trouble-makers.
     """
+
     class Meta:
         verbose_name = _('Ignored e-mail address')
         verbose_name_plural = _('Ignored e-mail addresses')
@@ -1573,8 +1545,8 @@ class IgnoreEmail(models.Model):
         _('Save Emails in Mailbox?'),
         blank=True,
         default=False,
-        help_text=_('Do you want to save emails from this address in the mailbox? '
-                    'If this is unticked, emails from this address will be deleted.'),
+        help_text="Do you want to save emails from this address in the mailbox? "
+                  "If this is unticked, emails from this address will be deleted.",
     )
 
     def __str__(self):
@@ -1586,9 +1558,6 @@ class IgnoreEmail(models.Model):
         return super(IgnoreEmail, self).save(*args, **kwargs)
 
     def queue_list(self):
-        """Return a list of the queues this IgnoreEmail applies to.
-        If this IgnoreEmail applies to ALL queues, return '*'.
-        """
         queues = self.queues.all().order_by('title')
         if len(queues) == 0:
             return '*'
@@ -1596,17 +1565,6 @@ class IgnoreEmail(models.Model):
             return ', '.join([str(q) for q in queues])
 
     def test(self, email):
-        """
-        Possible situations:
-            1. Username & Domain both match
-            2. Username is wildcard, domain matches
-            3. Username matches, domain is wildcard
-            4. username & domain are both wildcards
-            5. Other (no match)
-
-            1-4 return True, 5 returns False.
-        """
-
         own_parts = self.email_address.split("@")
         email_parts = email.split("@")
 
@@ -1620,15 +1578,6 @@ class IgnoreEmail(models.Model):
 
 
 class TicketCC(models.Model):
-    """
-    Often, there are people who wish to follow a ticket who aren't the
-    person who originally submitted it. This model provides a way for those
-    people to follow a ticket.
-
-    In this circumstance, a 'person' could be either an e-mail address or
-    an existing system user.
-    """
-
     ticket = models.ForeignKey(
         Ticket,
         on_delete=models.CASCADE,
@@ -1666,10 +1615,11 @@ class TicketCC(models.Model):
     )
 
     def _email_address(self):
-        if self.user and self.user.email is not None:
-            return self.user.email
+        if self.user and self.email is not None:
+            return self.email
         else:
             return self.email
+
     email_address = property(_email_address)
 
     def _display(self):
@@ -1677,13 +1627,14 @@ class TicketCC(models.Model):
             return self.user
         else:
             return self.email
+
     display = property(_display)
 
     def __str__(self):
         return '%s for %s' % (self.display, self.ticket.title)
 
     def clean(self):
-        if self.user and not self.user.email:
+        if self.user and not self.email:
             raise ValidationError('User has no email address')
 
 
@@ -1694,14 +1645,10 @@ class CustomFieldManager(models.Manager):
 
 
 class CustomField(models.Model):
-    """
-    Definitions for custom fields that are glued onto each ticket.
-    """
-
     name = models.SlugField(
         _('Field Name'),
-        help_text=_('As used in the database and behind the scenes. '
-                    'Must be unique and consist of only lowercase letters with no punctuation.'),
+        help_text="As used in the database and behind the scenes. Must be unique and consist of only lowercase "
+                  "letters with no punctuation.",
         unique=True,
     )
 
@@ -1780,6 +1727,7 @@ class CustomField(models.Model):
         choices = [[item.strip(), item.strip()] for item in valuebuffer.readlines()]
         valuebuffer.close()
         return choices
+
     choices_as_array = property(_choices_as_array)
 
     required = models.BooleanField(
@@ -1835,6 +1783,7 @@ class TicketDependency(models.Model):
     To help enforce this, a helper function `can_be_resolved` on each Ticket instance checks that
     these have all been resolved.
     """
+
     class Meta:
         unique_together = (('ticket', 'depends_on'),)
         verbose_name = _('Ticket dependency')

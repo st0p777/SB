@@ -2,27 +2,18 @@ from django.db.models import Q
 from django.urls import reverse
 from django.utils.html import escape
 from django.utils.translation import ugettext as _
-import sys
 from base64 import b64encode
 from base64 import b64decode
 import json
-
 from model_utils import Choices
-
 from .serializers import DatatablesTicketSerializer
 
 
 def query_to_base64(query):
-    """
-    Converts a query dict object to a base64-encoded bytes object.
-    """
     return b64encode(json.dumps(query).encode('UTF-8')).decode("ascii")
 
 
 def query_from_base64(b64data):
-    """
-    Converts base64-encoded bytes object back to a query dict object.
-    """
     query = {'search_string': ''}
     query.update(json.loads(b64decode(b64data).decode('utf-8')))
     if query['search_string'] is None:
@@ -31,14 +22,6 @@ def query_from_base64(b64data):
 
 
 def query_to_dict(results, descriptions):
-    """
-    Replacement method for cursor.dictfetchall() as that method no longer
-    exists in psycopg2, and I'm guessing in other backends too.
-
-    Converts the results of a raw SQL query into a list of dictionaries, suitable
-    for use in templates etc.
-    """
-
     output = []
     for data in results:
         row = {}
@@ -85,7 +68,7 @@ DATATABLES_ORDER_COLUMN_CHOICES = Choices(
     ('6', 'due_date'),
     ('7', 'assigned_to'),
     ('8', 'submitter_email'),
-    # ('9', 'time_spent'),
+    ('9', 'time_spent'),
     ('10', 'kbitem'),
 )
 
@@ -112,20 +95,6 @@ class __Query__:
         return get_search_filter_args(search)
 
     def __run__(self, queryset):
-        """
-        Apply a dict-based set of filters & parameters to a queryset.
-
-        queryset is a Django queryset, eg MyModel.objects.all() or
-            MyModel.objects.filter(user=request.user)
-
-        params is a dictionary that contains the following:
-           filtering: A dict of Django ORM filters, eg:
-            {'user__id__in': [1, 3, 103], 'title__contains': 'foo'}
-
-        search_string: A freetext search string
-
-        sorting: The name of the column to sort by
-        """
         filter = self.params.get('filtering', {})
         filter_or = self.params.get('filtering_or', {})
         queryset = queryset.filter((Q(**filter) | Q(**filter_or)) & self.get_search_filter_args())
@@ -144,25 +113,20 @@ class __Query__:
         return self.__run__(tickets)
 
     def get_datatables_context(self, **kwargs):
-        """
-        This function takes in a list of ticket objects from the views and throws it
-        to the datatables on ticket_list.html. If a search string was entered, this
-        function filters existing dataset on search string and returns a filtered
-        filtered list. The `draw`, `length` etc parameters are for datatables to
-        display meta data on the table contents. The returning queryset is passed
-        to a Serializer called DatatablesTicketSerializer in serializers.py.
-        """
         objects = self.get()
         order_by = '-created'
         draw = int(kwargs.get('draw', [0])[0])
-        length = int(kwargs.get('length', [0])[0])
-        start = int(kwargs.get('start', [0])[0])
+        try:
+            length = int(kwargs.get('length', [0])[0])
+            start = int(kwargs.get('start', [0])[0])
+        except ValueError:
+            length = 0
+            start = 0
         search_value = kwargs.get('search[value]', [""])[0]
         order_column = kwargs.get('order[0][column]', ['5'])[0]
         order = kwargs.get('order[0][dir]', ["asc"])[0]
 
         order_column = DATATABLES_ORDER_COLUMN_CHOICES[order_column]
-        # django orm '-' -> desc
         if order == 'desc':
             order_column = '-' + order_column
 

@@ -4,8 +4,10 @@ from django.views.generic import TemplateView
 from .decorators import helpdesk_staff_member_required, protect_view
 from .settings import settings as helpdesk_settings
 from .views import feeds, staff, public, kb, login
-from django.urls import path, include, re_path
+from django.urls import path, re_path, include
 from django.contrib import admin
+from django.contrib.admindocs import urls as admindocs_urls
+from django.conf import settings
 
 
 class DirectTemplateView(TemplateView):
@@ -27,6 +29,9 @@ app_name = 'SB'
 base64_pattern = r'(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/]{2}==|[A-Za-z0-9+/]{3}=)?$'
 
 urlpatterns = [
+    path('admin/doc/', include(admindocs_urls)),  # noqa: DJ05
+    path('robots.txt', TemplateView.as_view(template_name='txt/robots.txt', content_type='text/plain',)),
+    path('humans.txt', TemplateView.as_view(template_name='txt/humans.txt',content_type='text/plain',)),
     path('admin/', admin.site.urls),
     path('dashboard/', staff.dashboard, name='dashboard'),
     path('tickets/', staff.ticket_list, name='list'),
@@ -42,10 +47,10 @@ urlpatterns = [
     path('tickets/<int:ticket_id>/unhold/', staff.unhold_ticket, name='unhold'),
     path('tickets/<int:ticket_id>/cc/', staff.ticket_cc, name='ticket_cc'),
     path('tickets/<int:ticket_id>/cc/add/', staff.ticket_cc_add, name='ticket_cc_add'),
-    path('tickets/<int:ticket_id>/cc/delete/<cc_id>/', staff.ticket_cc_del, name='ticket_cc_del'),
+    path('tickets/<int:ticket_id>/cc/delete/<int:cc_id>/', staff.ticket_cc_del, name='ticket_cc_del'),
     path('tickets/<int:ticket_id>/dependency/add/', staff.ticket_dependency_add, name='ticket_dependency_add'),
-    path('tickets/<int:ticket_id>/dependency/delete/<dependency_id>/', staff.ticket_dependency_del, name='ticket_dependency_del'),
-    path('tickets/<int:ticket_id>/attachment_delete/<attachment_id>/', staff.attachment_del, name='attachment_del'),
+    path('tickets/<int:ticket_id>/dependency/delete/<int:dependency_id>/', staff.ticket_dependency_del, name='ticket_dependency_del'),
+    path('tickets/<int:ticket_id>/attachment_delete/<int:attachment_id>/', staff.attachment_del, name='attachment_del'),
     path('raw/<type>/', staff.raw_details, name='raw'),
     path('rss/', staff.rss_list, name='rss_index'),
     path('reports/', staff.report_index, name='report_index'),
@@ -55,7 +60,7 @@ urlpatterns = [
     path('settings/', staff.EditUserSettingsView.as_view(), name='user_settings'),
     path('ignore/', staff.email_ignore, name='email_ignore'),
     path('ignore/add/', staff.email_ignore_add, name='email_ignore_add'),
-    path('ignore/delete/<id>/', staff.email_ignore_del, name='email_ignore_del'),
+    path('ignore/delete/<int:id>/', staff.email_ignore_del, name='email_ignore_del'),
     re_path('^datatables_ticket_list/(?P<query>{})$'.format(base64_pattern), staff.datatables_ticket_list, name='datatables_ticket_list'),
     re_path('^timeline_ticket_list/(?P<query>{})$'.format(base64_pattern), staff.timeline_ticket_list, name='timeline_ticket_list'),
     path('', protect_view(public.Homepage.as_view()), name='home'),
@@ -85,5 +90,8 @@ if helpdesk_settings.HELPDESK_KB_ENABLED:
         path('kb_iframe/<slug>/', kb.category_iframe, name='kb_category_iframe'),
     ]
 
-
-
+if settings.DEBUG:
+    import debug_toolbar
+    urlpatterns += [
+        path('__debug__/', include(debug_toolbar.urls))
+    ]
